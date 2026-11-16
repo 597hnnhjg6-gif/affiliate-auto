@@ -29,11 +29,16 @@ def test():
     docs = ROOT/'docs'
     assert (docs/'index.html').exists()
     assert (docs/'robots.txt').exists()
+    for info in ('about.html', 'privacy.html', 'advertising.html'):
+        assert (docs/info).exists(), f'{info}: missing information page'
+        assert '運営者情報' in (docs/'index.html').read_text(encoding='utf-8')
     from xml.etree import ElementTree as ET
     sitemap = docs/'sitemap.xml'
     assert sitemap.exists(), 'sitemap.xml missing'
     urls = [node.text for node in ET.parse(sitemap).iter('{http://www.sitemaps.org/schemas/sitemap/0.9}loc')]
-    assert len(urls) >= 5, 'sitemap should contain all public pages'
+    assert len(urls) >= 8, 'sitemap should contain calculators and policy pages'
+    for info in ('about.html', 'privacy.html', 'advertising.html'):
+        assert any(url.endswith('/'+info) for url in urls), f'{info}: not in sitemap'
     assert all('googlee2ddc50d2788833b' not in url for url in urls)
     assert 'Sitemap: https://597hnnhjg6-gif.github.io/affiliate-auto/sitemap.xml' in (docs/'robots.txt').read_text(encoding='utf-8')
     count = 0
