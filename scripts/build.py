@@ -32,6 +32,18 @@ index='''<h1>無料の計算ツール・サービス比較ノート</h1>
 <p>計算結果は参考値です。契約・取引・意思決定の前に条件をご確認ください。</p>
 <h2>サービス紹介</h2>'''
 index+= '<ul>'+''.join(links)+'</ul>' if links else '<p>現在、公開中の紹介記事はありません。広告案件は提携・内容確認後に掲載します。</p>'
+# Editorial-only page: no A8 tracking link or unapproved ad material.
+star_body='''<h1>スターレンタルサーバーとは？</h1>
+<p class="note">本ページはサービスの一般情報を紹介する記事です。現時点でアフィリエイト広告リンクは掲載していません。</p>
+<p>スターレンタルサーバーは、エックスサーバー株式会社が運営するレンタルサーバーサービスです。WordPressによるブログやホームページの公開に利用できます。</p>
+<h2>公式情報で確認できる特徴</h2>
+<ul><li>NVMe SSDを採用したサーバー環境</li><li>WordPressの利用に対応</li><li>無料独自SSLに対応</li><li>エックスサーバーのシステムを採用</li></ul>
+<h2>契約前に確認したい点</h2>
+<p>プランごとの料金、契約期間、更新時の料金、容量、バックアップ、サポート範囲は公式サイトの最新表示で確認してください。速度や「最安」「最強」といった比較表現は、測定条件によって結果が変わります。</p>
+<h2>公式情報</h2><p><a href="https://www.star.ne.jp/" rel="noopener" target="_blank">スターレンタルサーバー公式サイト（広告リンクではありません）</a></p>
+<p>情報確認日：2026-11-17。実利用による検証・速度測定は実施していません。</p>'''
+(OUT/'star-rental-server.html').write_text(page('スターレンタルサーバーの特徴と契約前の確認点',star_body,'スターレンタルサーバーの公式情報に基づく特徴と契約前の確認点。広告リンクなし。'),encoding='utf-8')
+index += '<h2>サービスの基礎情報</h2><ul><li><a href="./star-rental-server.html">スターレンタルサーバーの特徴と契約前の確認点</a> — 広告リンクなし</li></ul>'
 (OUT/'index.html').write_text(page('サービス比較ノート',index,'クラウド費用・割合・時給・損益分岐点を無料で計算できるツールとサービス比較情報。'),encoding='utf-8')
 (OUT/'robots.txt').write_text('User-agent: *\nAllow: /\n',encoding='utf-8')
 print(f'Built {len(valid)} offer pages')
