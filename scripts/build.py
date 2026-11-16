@@ -5,8 +5,9 @@ BASE_URL='https://597hnnhjg6-gif.github.io/affiliate-auto/'
 rows=list(csv.DictReader((ROOT/'data/offers.csv').open(encoding='utf-8-sig',newline='')))
 def esc(s): return html.escape(str(s or ''))
 def slug(s): return re.sub(r'[^a-z0-9-]','-',s.lower()).strip('-')[:60]
-def page(title,body,description='無料の計算ツールとサービス比較情報を掲載しています。'):
- return f'''<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="index,follow"><meta name="description" content="{esc(description)}"><title>{esc(title)}</title><style>body{{font-family:system-ui,sans-serif;max-width:760px;margin:40px auto;padding:0 20px;line-height:1.8;color:#222}}a{{color:#1454a3}}.note{{background:#f4f4f4;padding:12px;border-radius:8px}}footer{{margin-top:60px;color:#555;font-size:.9em}}</style></head><body><header><a href="./index.html">サービス比較ノート</a></header><main>{body}</main><footer>広告を含む場合があります。情報は掲載時点のものです。最新の条件は公式サイトをご確認ください。<p><a href="./about.html">サイトについて・運営者情報</a> ｜ <a href="./privacy.html">プライバシーポリシー</a> ｜ <a href="./advertising.html">広告掲載方針</a></p></footer></body></html>'''
+def page(title,body,description='無料の計算ツールとサービス比較情報を掲載しています。',canonical=None):
+ canonical_tag = '<link rel="canonical" href="'+esc(BASE_URL+canonical)+'">' if canonical else ''
+ return f'''<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="index,follow"><meta name="description" content="{esc(description)}">{canonical_tag}<title>{esc(title)}</title><style>body{{font-family:system-ui,sans-serif;max-width:760px;margin:40px auto;padding:0 20px;line-height:1.8;color:#222}}a{{color:#1454a3}}.note{{background:#f4f4f4;padding:12px;border-radius:8px}}footer{{margin-top:60px;color:#555;font-size:.9em}}</style></head><body><header><a href="./index.html">サービス比較ノート</a></header><main>{body}</main><footer>広告を含む場合があります。情報は掲載時点のものです。最新の条件は公式サイトをご確認ください。<p><a href="./about.html">サイトについて・運営者情報</a> ｜ <a href="./privacy.html">プライバシーポリシー</a> ｜ <a href="./advertising.html">広告掲載方針</a></p></footer></body></html>'''
 valid=[]
 for r in rows:
  if r['enabled'].strip().lower()!='true': continue
@@ -31,7 +32,7 @@ index='''<h1>無料の計算ツール・サービス比較ノート</h1>
 </ul>
 <p>計算結果は参考値です。契約・取引・意思決定の前に条件をご確認ください。</p>
 <h2>サービス紹介</h2>'''
-index+= '<ul>'+''.join(links)+'</ul>' if links else '<p>現在、公開中の紹介記事はありません。広告案件は提携・内容確認後に掲載します。</p>'
+index+= '<ul>'+''.join(links)+'</ul>' if links else '<p>承認済み広告を含むサービス紹介は、下記の基礎情報からご覧ください。</p>'
 # Editorial-only page: no A8 tracking link or unapproved ad material.
 star_body='''<h1>スターレンタルサーバーとは？</h1>
 <p class="note">PR：本ページにはアフィリエイト広告が含まれます。</p>
@@ -46,7 +47,7 @@ star_body='''<h1>スターレンタルサーバーとは？</h1>
 star_ad=(ROOT/'data/approved_ads/star-rental-server.html').read_text(encoding='utf-8')
 star_banner=(ROOT/'data/approved_ads/star-rental-server-banner.html').read_text(encoding='utf-8')
 star_body += '<h2>広告</h2><p>PR：以下はアフィリエイト広告です。</p><div>' + star_ad + '</div><div>' + star_banner + '</div>'
-(OUT/'star-rental-server.html').write_text(page('スターレンタルサーバーの特徴と契約前の確認点',star_body,'スターレンタルサーバーの特徴と契約前の確認点。PR・広告を含みます。'),encoding='utf-8')
+(OUT/'star-rental-server.html').write_text(page('スターレンタルサーバーの特徴と契約前の確認点',star_body,'スターレンタルサーバーの特徴と契約前の確認点。PR・広告を含みます。',canonical='star-rental-server.html'),encoding='utf-8')
 index += '<h2>サービスの基礎情報</h2><ul><li><a href="./star-rental-server.html">スターレンタルサーバーの特徴と契約前の確認点</a> — PR・広告あり</li></ul>'
 # Evergreen help articles: no fabricated benchmarks, prices, or rankings.
 help_articles = [
@@ -55,9 +56,9 @@ help_articles = [
  ('server-cost-checklist.html', 'レンタルサーバーの料金比較で見落としやすい費用', '''<h1>レンタルサーバーの料金比較で見落としやすい費用</h1><p>広告に表示される月額料金は、契約期間やキャンペーンの適用条件によって実際の支払額と異なることがあります。</p><h2>比較するときの項目</h2><ul><li>初回契約の合計金額</li><li>更新時の月額換算額</li><li>独自ドメインの取得・更新費</li><li>バックアップや復元の追加費用</li><li>契約期間と途中解約時の条件</li><li>支払方法と税の扱い</li></ul><h2>計算例</h2><p>初回12か月分が合計6,000円なら月額換算は500円です。ただし更新料金が異なる場合、2年目以降は別に計算する必要があります。これは説明用の仮定であり、特定サービスの料金ではありません。</p><p>関連：<a href="./rental-server-selection.html">サーバーの選び方</a>／<a href="./star-rental-server.html">スターレンタルサーバー（PR・広告あり）</a></p>''')
 ]
 for filename, title, body in help_articles:
- (OUT/filename).write_text(page(title, body, title), encoding='utf-8')
+ (OUT/filename).write_text(page(title, body, title, canonical=filename), encoding='utf-8')
 index += '<h2>レンタルサーバー・ブログの基礎知識</h2><ul>' + ''.join('<li><a href="./'+filename+'">'+esc(title)+'</a></li>' for filename,title,_ in help_articles) + '</ul>'
-(OUT/'index.html').write_text(page('サービス比較ノート',index,'クラウド費用・割合・時給・損益分岐点を無料で計算できるツールとサービス比較情報。'),encoding='utf-8')
+(OUT/'index.html').write_text(page('サービス比較ノート',index,'クラウド費用・割合・時給・損益分岐点を無料で計算できるツールとサービス比較情報。',canonical='index.html'),encoding='utf-8')
 (OUT/'robots.txt').write_text('User-agent: *\nAllow: /\n',encoding='utf-8')
 print(f'Built {len(valid)} offer pages')
 
@@ -85,7 +86,7 @@ for filename,title,body,description in [
  ('privacy.html','プライバシーポリシー',privacy_body,'計算ツールの入力内容、ホスティング、外部リンクの情報の取扱いについて。'),
  ('advertising.html','広告掲載方針',advertising_body,'アフィリエイト広告の表示方法とサービス紹介の方針について。')
 ]:
- (OUT/filename).write_text(page(title,body,description),encoding='utf-8')
+ (OUT/filename).write_text(page(title,body,description,canonical=filename),encoding='utf-8')
 
 # Generate a fresh sitemap after all calculator pages have been created.
 from xml.etree.ElementTree import Element, SubElement, ElementTree
