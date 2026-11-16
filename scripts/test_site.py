@@ -60,7 +60,14 @@ def test():
         active = [r for r in csv.DictReader(
             h) if r['enabled'].lower() == 'true']
     for r in active:
-        assert 'PR：' in (docs/(r['id']+'.html')).read_text(encoding='utf-8')
+        article = docs/(r['id']+'.html')
+        assert article.exists(), f"{r['id']}: missing offer page"
+        content = article.read_text(encoding='utf-8')
+        assert 'PR：' in content, f"{r['id']}: missing PR disclosure"
+        assert 'rel="sponsored nofollow noopener"' in content, f"{r['id']}: missing sponsored link attributes"
+        assert 'サービスの詳細を見る（広告）' in content, f"{r['id']}: missing ad label"
+        assert any(url.endswith('/'+r['id']+'.html') for url in urls), f"{r['id']}: missing from sitemap"
+        assert './'+r['id']+'.html' in (docs/'index.html').read_text(encoding='utf-8'), f"{r['id']}: missing homepage link"
     print(f'PASS: {count} HTML pages, internal links, enabled offer disclosures')
 
 
