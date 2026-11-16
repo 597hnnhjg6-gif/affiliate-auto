@@ -4,6 +4,7 @@ import datetime as dt
 import pathlib
 import re
 from urllib.parse import urlsplit
+import ipaddress
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 REQUIRED = ('id', 'name', 'category', 'description', 'benefits', 'cautions', 'price_note', 'affiliate_url', 'official_url', 'verified_at', 'enabled')
@@ -18,22 +19,31 @@ def check():
         for n, r in enumerate(reader, 2):
             if r['enabled'].strip().lower() not in ('true', 'false'):
                 errors.append(f'Row {n}: enabled must be true/false')
+            key = (r.get('id') or '').strip()
+            if key in ids:
+                errors.append(f'Row {n}: duplicate id')
+            ids.add(key)
             if r['enabled'].strip().lower() != 'true':
                 continue
             key = r['id'].strip()
             if not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', key):
                 errors.append(f'Row {n}: invalid id')
-            if key in ids:
-                errors.append(f'Row {n}: duplicate id')
-            ids.add(key)
             for field in REQUIRED:
                 if field != 'enabled' and not (r.get(field) or '').strip():
                     errors.append(f'Row {n}: missing {field}')
             for field in ('affiliate_url', 'official_url'):
                 url = (r.get(field) or '').strip()
                 parts = urlsplit(url)
-                if parts.scheme != 'https' or not parts.hostname or parts.username or parts.password:
+                if parts.scheme != 'https' or not parts.hostname or parts.username or parts.password or parts.port not in (None, 443):
                     errors.append(f'Row {n}: {field} must be a valid HTTPS URL')
+                if parts.hostname:
+                    host = parts.hostname.lower().rstrip('.')
+                    try:
+                        ipaddress.ip_address(host)
+                        errors.append(f'Row {n}: {field} cannot use an IP address')
+                    except ValueError:
+                        if host == 'localhost' or '.' not in host or host.endswith(('.local', '.internal', '.test', '.invalid', '.example')):
+                            errors.append(f'Row {n}: {field} must use a public hostname')
             try:
                 verified = dt.date.fromisoformat(r['verified_at'].strip())
                 age = (dt.date.today() - verified).days
