@@ -44,8 +44,9 @@ star_body='''<h1>スターレンタルサーバーとは？</h1>
 <p>情報確認日：2026-11-17。実利用による検証・速度測定は実施していません。</p>'''
 # Preserve the user-supplied A8 code byte-for-byte; never reconstruct a URL-only link.
 star_ad=(ROOT/'data/approved_ads/star-rental-server.html').read_text(encoding='utf-8')
-star_body += '<h2>広告</h2><p>PR：以下はアフィリエイト広告です。</p><div>' + star_ad + '</div>'
-(OUT/'star-rental-server.html').write_text(page('スターレンタルサーバーの特徴と契約前の確認点',star_body,'スターレンタルサーバーの公式情報に基づく特徴と契約前の確認点。広告リンクなし。'),encoding='utf-8')
+star_banner=(ROOT/'data/approved_ads/star-rental-server-banner.html').read_text(encoding='utf-8')
+star_body += '<h2>広告</h2><p>PR：以下はアフィリエイト広告です。</p><div>' + star_ad + '</div><div>' + star_banner + '</div>'
+(OUT/'star-rental-server.html').write_text(page('スターレンタルサーバーの特徴と契約前の確認点',star_body,'スターレンタルサーバーの特徴と契約前の確認点。PR・広告を含みます。'),encoding='utf-8')
 index += '<h2>サービスの基礎情報</h2><ul><li><a href="./star-rental-server.html">スターレンタルサーバーの特徴と契約前の確認点</a> — PR・広告あり</li></ul>'
 (OUT/'index.html').write_text(page('サービス比較ノート',index,'クラウド費用・割合・時給・損益分岐点を無料で計算できるツールとサービス比較情報。'),encoding='utf-8')
 (OUT/'robots.txt').write_text('User-agent: *\nAllow: /\n',encoding='utf-8')
