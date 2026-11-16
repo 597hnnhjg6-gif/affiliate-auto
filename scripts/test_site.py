@@ -41,6 +41,13 @@ def test():
         assert any(url.endswith('/'+info) for url in urls), f'{info}: not in sitemap'
     assert all('googlee2ddc50d2788833b' not in url for url in urls)
     assert 'Sitemap: https://597hnnhjg6-gif.github.io/affiliate-auto/sitemap.xml' in (docs/'robots.txt').read_text(encoding='utf-8')
+    # The approved ad snippet must be embedded verbatim, including the tracking pixel.
+    approved = (ROOT/'data/approved_ads/star-rental-server.html').read_text(encoding='utf-8')
+    star = (docs/'star-rental-server.html').read_text(encoding='utf-8')
+    assert approved in star, 'approved A8 ad code must not be altered'
+    assert 'PR：本ページにはアフィリエイト広告が含まれます。' in star
+    assert 'PR・広告あり' in (docs/'index.html').read_text(encoding='utf-8')
+    assert 'スターレンタルサーバーの紹介記事にアフィリエイト広告' in (docs/'advertising.html').read_text(encoding='utf-8')
     count = 0
     for f in docs.glob('*.html'):
         text = f.read_text(encoding='utf-8')
