@@ -10,7 +10,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 REQUIRED = ('id', 'name', 'category', 'description', 'benefits', 'cautions', 'price_note', 'affiliate_url', 'official_url', 'verified_at', 'enabled')
 
 def check():
-    errors, warnings, ids = [], [], set()
+    errors, warnings, ids, affiliate_urls = [], [], set(), set()
     with (ROOT / 'data/offers.csv').open(encoding='utf-8-sig', newline='') as f:
         reader = csv.DictReader(f)
         missing = set(REQUIRED) - set(reader.fieldnames or [])
@@ -31,6 +31,14 @@ def check():
             for field in REQUIRED:
                 if field != 'enabled' and not (r.get(field) or '').strip():
                     errors.append(f'Row {n}: missing {field}')
+            if len((r.get('description') or '').strip()) < 30:
+                warnings.append(f'Row {n}: description is short; verify usefulness and accuracy')
+            if (r.get('affiliate_url') or '').strip() == (r.get('official_url') or '').strip():
+                warnings.append(f'Row {n}: affiliate and official URLs are identical; confirm tracking')
+            aff = (r.get('affiliate_url') or '').strip()
+            if aff in affiliate_urls:
+                warnings.append(f'Row {n}: affiliate URL is duplicated')
+            affiliate_urls.add(aff)
             for field in ('affiliate_url', 'official_url'):
                 url = (r.get(field) or '').strip()
                 parts = urlsplit(url)
@@ -49,7 +57,7 @@ def check():
                         if host == 'localhost' or '.' not in host or host.endswith(('.local', '.internal', '.test', '.invalid', '.example')):
                             errors.append(f'Row {n}: {field} must use a public hostname')
             try:
-                verified = dt.date.fromisoformat(r['verified_at'].strip())
+                verified = dt.date.fromisoformat((r.get('verified_at') or '').strip())
                 age = (dt.date.today() - verified).days
                 if age > 90:
                     warnings.append(f'Row {n}: information last verified {age} days ago')
