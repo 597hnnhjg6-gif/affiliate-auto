@@ -34,7 +34,11 @@ def check():
             for field in ('affiliate_url', 'official_url'):
                 url = (r.get(field) or '').strip()
                 parts = urlsplit(url)
-                if parts.scheme != 'https' or not parts.hostname or parts.username or parts.password or parts.port not in (None, 443):
+                try:
+                    valid_port = parts.port in (None, 443)
+                except ValueError:
+                    valid_port = False
+                if parts.scheme != 'https' or not parts.hostname or parts.username or parts.password or not valid_port:
                     errors.append(f'Row {n}: {field} must be a valid HTTPS URL')
                 if parts.hostname:
                     host = parts.hostname.lower().rstrip('.')
