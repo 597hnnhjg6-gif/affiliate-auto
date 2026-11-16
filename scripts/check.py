@@ -26,6 +26,8 @@ def check():
             if r['enabled'].strip().lower() != 'true':
                 continue
             key = r['id'].strip()
+            if key == 'sample' or any('ここに' in (r.get(field) or '') for field in ('description','benefits','cautions','price_note')):
+                errors.append(f'Row {n}: placeholder content cannot be published')
             if not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', key):
                 errors.append(f'Row {n}: invalid id')
             for field in REQUIRED:
@@ -41,7 +43,11 @@ def check():
             affiliate_urls.add(aff)
             for field in ('affiliate_url', 'official_url'):
                 url = (r.get(field) or '').strip()
-                parts = urlsplit(url)
+                try:
+                    parts = urlsplit(url)
+                except ValueError:
+                    errors.append(f'Row {n}: {field} has an invalid URL')
+                    continue
                 try:
                     valid_port = parts.port in (None, 443)
                 except ValueError:
