@@ -48,6 +48,15 @@ star_banner=(ROOT/'data/approved_ads/star-rental-server-banner.html').read_text(
 star_body += '<h2>広告</h2><p>PR：以下はアフィリエイト広告です。</p><div>' + star_ad + '</div><div>' + star_banner + '</div>'
 (OUT/'star-rental-server.html').write_text(page('スターレンタルサーバーの特徴と契約前の確認点',star_body,'スターレンタルサーバーの特徴と契約前の確認点。PR・広告を含みます。'),encoding='utf-8')
 index += '<h2>サービスの基礎情報</h2><ul><li><a href="./star-rental-server.html">スターレンタルサーバーの特徴と契約前の確認点</a> — PR・広告あり</li></ul>'
+# Evergreen help articles: no fabricated benchmarks, prices, or rankings.
+help_articles = [
+ ('rental-server-selection.html', 'レンタルサーバーの選び方：契約前の7つの確認点', '''<h1>レンタルサーバーの選び方</h1><p>ブログやホームページを公開するときは、月額料金だけでなく、用途に合った機能と更新時の費用を確認することが重要です。</p><h2>契約前に確認したい7項目</h2><ol><li>WordPressの利用可否と導入方法</li><li>初回料金・更新料金・最低契約期間</li><li>容量とファイル数などの制限</li><li>無料SSLと独自ドメインの設定方法</li><li>バックアップの有無と復元費用</li><li>問い合わせ方法とサポート対応時間</li><li>解約・移転時のデータ取得方法</li></ol><h2>最初に必要なこと</h2><p>小規模なブログなら、使うCMS、必要なメールアドレス数、予算を整理してからプランを比較しましょう。速度は利用条件や計測環境で変わるため、宣伝文句だけで判断しないことをおすすめします。</p><p>関連：<a href="./star-rental-server.html">スターレンタルサーバーの紹介（PR・広告あり）</a></p>'''),
+ ('wordpress-start-guide.html', 'WordPressブログを始める前の準備チェックリスト', '''<h1>WordPressブログを始める前の準備</h1><p>WordPressでブログを作るには、公開場所となるサーバー、必要に応じて独自ドメイン、記事を管理する仕組みを用意します。</p><h2>準備チェックリスト</h2><ol><li>ブログのテーマと想定読者を決める</li><li>独自ドメインを使うか決める</li><li>WordPressに対応するサーバーを選ぶ</li><li>SSL（HTTPS）を有効にする</li><li>管理者のパスワードと二要素認証を設定する</li><li>バックアップと更新の運用を決める</li><li>プライバシーポリシーや広告表示の要否を確認する</li></ol><h2>公開後の運用</h2><p>テーマやプラグインを定期更新し、バックアップを確認しましょう。広告を掲載する場合は利用するASPと広告主の条件も確認してください。</p><p>関連：<a href="./rental-server-selection.html">レンタルサーバーの選び方</a></p>'''),
+ ('server-cost-checklist.html', 'レンタルサーバーの料金比較で見落としやすい費用', '''<h1>レンタルサーバーの料金比較で見落としやすい費用</h1><p>広告に表示される月額料金は、契約期間やキャンペーンの適用条件によって実際の支払額と異なることがあります。</p><h2>比較するときの項目</h2><ul><li>初回契約の合計金額</li><li>更新時の月額換算額</li><li>独自ドメインの取得・更新費</li><li>バックアップや復元の追加費用</li><li>契約期間と途中解約時の条件</li><li>支払方法と税の扱い</li></ul><h2>計算例</h2><p>初回12か月分が合計6,000円なら月額換算は500円です。ただし更新料金が異なる場合、2年目以降は別に計算する必要があります。これは説明用の仮定であり、特定サービスの料金ではありません。</p><p>関連：<a href="./rental-server-selection.html">サーバーの選び方</a>／<a href="./star-rental-server.html">スターレンタルサーバー（PR・広告あり）</a></p>''')
+]
+for filename, title, body in help_articles:
+ (OUT/filename).write_text(page(title, body, title), encoding='utf-8')
+index += '<h2>レンタルサーバー・ブログの基礎知識</h2><ul>' + ''.join('<li><a href="./'+filename+'">'+esc(title)+'</a></li>' for filename,title,_ in help_articles) + '</ul>'
 (OUT/'index.html').write_text(page('サービス比較ノート',index,'クラウド費用・割合・時給・損益分岐点を無料で計算できるツールとサービス比較情報。'),encoding='utf-8')
 (OUT/'robots.txt').write_text('User-agent: *\nAllow: /\n',encoding='utf-8')
 print(f'Built {len(valid)} offer pages')
