@@ -53,6 +53,9 @@ def test():
     assert 'width="300" height="250"' in star
     assert 'PR：本ページにはアフィリエイト広告が含まれます。' in star
     assert 'PR・広告あり' in (docs/'index.html').read_text(encoding='utf-8')
+    assert '現在、公開中の紹介記事はありません' not in (docs/'index.html').read_text(encoding='utf-8')
+    for filename in ('index.html', 'star-rental-server.html', 'rental-server-selection.html', 'wordpress-start-guide.html', 'server-cost-checklist.html'):
+        assert '<link rel="canonical" href="https://597hnnhjg6-gif.github.io/affiliate-auto/'+filename+'">' in (docs/filename).read_text(encoding='utf-8'), f'{filename}: missing canonical'
     assert 'スターレンタルサーバーの紹介記事にアフィリエイト広告' in (docs/'advertising.html').read_text(encoding='utf-8')
     count = 0
     for f in docs.glob('*.html'):
