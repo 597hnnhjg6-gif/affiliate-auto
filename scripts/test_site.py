@@ -29,6 +29,9 @@ def test():
     docs = ROOT/'docs'
     assert (docs/'index.html').exists()
     assert (docs/'robots.txt').exists()
+    for article in ('rental-server-selection.html', 'wordpress-start-guide.html', 'server-cost-checklist.html'):
+        assert (docs/article).exists(), f'{article}: missing evergreen article'
+        assert './'+article in (docs/'index.html').read_text(encoding='utf-8'), f'{article}: missing homepage link'
     for info in ('about.html', 'privacy.html', 'advertising.html'):
         assert (docs/info).exists(), f'{info}: missing information page'
         assert '運営者情報' in (docs/'index.html').read_text(encoding='utf-8')
