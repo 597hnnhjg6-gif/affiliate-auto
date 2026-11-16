@@ -34,7 +34,7 @@ index='''<h1>無料の計算ツール・サービス比較ノート</h1>
 index+= '<ul>'+''.join(links)+'</ul>' if links else '<p>現在、公開中の紹介記事はありません。広告案件は提携・内容確認後に掲載します。</p>'
 # Editorial-only page: no A8 tracking link or unapproved ad material.
 star_body='''<h1>スターレンタルサーバーとは？</h1>
-<p class="note">本ページはサービスの一般情報を紹介する記事です。現時点でアフィリエイト広告リンクは掲載していません。</p>
+<p class="note">PR：本ページにはアフィリエイト広告が含まれます。</p>
 <p>スターレンタルサーバーは、エックスサーバー株式会社が運営するレンタルサーバーサービスです。WordPressによるブログやホームページの公開に利用できます。</p>
 <h2>公式情報で確認できる特徴</h2>
 <ul><li>NVMe SSDを採用したサーバー環境</li><li>WordPressの利用に対応</li><li>無料独自SSLに対応</li><li>エックスサーバーのシステムを採用</li></ul>
@@ -42,8 +42,11 @@ star_body='''<h1>スターレンタルサーバーとは？</h1>
 <p>プランごとの料金、契約期間、更新時の料金、容量、バックアップ、サポート範囲は公式サイトの最新表示で確認してください。速度や「最安」「最強」といった比較表現は、測定条件によって結果が変わります。</p>
 <h2>公式情報</h2><p><a href="https://www.star.ne.jp/" rel="noopener" target="_blank">スターレンタルサーバー公式サイト（広告リンクではありません）</a></p>
 <p>情報確認日：2026-11-17。実利用による検証・速度測定は実施していません。</p>'''
+# Preserve the user-supplied A8 code byte-for-byte; never reconstruct a URL-only link.
+star_ad=(ROOT/'data/approved_ads/star-rental-server.html').read_text(encoding='utf-8')
+star_body += '<h2>広告</h2><p>PR：以下はアフィリエイト広告です。</p><div>' + star_ad + '</div>'
 (OUT/'star-rental-server.html').write_text(page('スターレンタルサーバーの特徴と契約前の確認点',star_body,'スターレンタルサーバーの公式情報に基づく特徴と契約前の確認点。広告リンクなし。'),encoding='utf-8')
-index += '<h2>サービスの基礎情報</h2><ul><li><a href="./star-rental-server.html">スターレンタルサーバーの特徴と契約前の確認点</a> — 広告リンクなし</li></ul>'
+index += '<h2>サービスの基礎情報</h2><ul><li><a href="./star-rental-server.html">スターレンタルサーバーの特徴と契約前の確認点</a> — PR・広告あり</li></ul>'
 (OUT/'index.html').write_text(page('サービス比較ノート',index,'クラウド費用・割合・時給・損益分岐点を無料で計算できるツールとサービス比較情報。'),encoding='utf-8')
 (OUT/'robots.txt').write_text('User-agent: *\nAllow: /\n',encoding='utf-8')
 print(f'Built {len(valid)} offer pages')
@@ -66,7 +69,7 @@ advertising_body='''<h1>広告掲載方針</h1>
 <p>当サイトはアフィリエイト広告を掲載する場合があります。紹介リンクを通じて契約・購入等が成立すると、運営者が報酬を受け取ることがあります。</p>
 <p>広告を含む記事には「PR」等の表示を行い、広告リンクには広告であることを分かるように記載します。</p>
 <p>紹介内容は確認できた情報に基づいて記載する方針ですが、料金・条件・提供状況は変更されることがあります。契約前に必ず公式サイトをご確認ください。</p>
-<p>現在、公開中のアフィリエイト紹介記事はありません。</p>'''
+<p>スターレンタルサーバーの紹介記事にアフィリエイト広告を掲載しています。</p>'''
 for filename,title,body,description in [
  ('about.html','サイトについて・運営者情報',about_body,'サイトの運営方針、運営者情報、お問い合わせ状況について。'),
  ('privacy.html','プライバシーポリシー',privacy_body,'計算ツールの入力内容、ホスティング、外部リンクの情報の取扱いについて。'),
