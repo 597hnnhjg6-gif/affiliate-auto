@@ -48,7 +48,7 @@ def test():
         active = [r for r in csv.DictReader(
             h) if r['enabled'].lower() == 'true']
     for r in active:
-        assert 'PR表記' in (docs/(r['id']+'.html')).read_text(encoding='utf-8')
+        assert 'PR：' in (docs/(r['id']+'.html')).read_text(encoding='utf-8')
     print(f'PASS: {count} HTML pages, internal links, enabled offer disclosures')
 
 
