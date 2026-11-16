@@ -45,6 +45,9 @@ def test():
     approved = (ROOT/'data/approved_ads/star-rental-server.html').read_text(encoding='utf-8')
     star = (docs/'star-rental-server.html').read_text(encoding='utf-8')
     assert approved in star, 'approved A8 ad code must not be altered'
+    banner = (ROOT/'data/approved_ads/star-rental-server-banner.html').read_text(encoding='utf-8')
+    assert banner in star, 'approved A8 banner code must not be altered'
+    assert 'width="300" height="250"' in star
     assert 'PR：本ページにはアフィリエイト広告が含まれます。' in star
     assert 'PR・広告あり' in (docs/'index.html').read_text(encoding='utf-8')
     assert 'スターレンタルサーバーの紹介記事にアフィリエイト広告' in (docs/'advertising.html').read_text(encoding='utf-8')
