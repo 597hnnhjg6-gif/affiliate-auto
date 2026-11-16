@@ -26,6 +26,8 @@ def check():
             if r['enabled'].strip().lower() != 'true':
                 continue
             key = r['id'].strip()
+            # Fail closed: the legacy URL-only renderer cannot preserve A8-issued ad code.
+            errors.append(f'Row {n}: affiliate publication disabled until approved, unmodified ad-code rendering is implemented')
             if key == 'sample' or any('ここに' in (r.get(field) or '') for field in ('description','benefits','cautions','price_note')):
                 errors.append(f'Row {n}: placeholder content cannot be published')
             if not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', key):
