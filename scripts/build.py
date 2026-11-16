@@ -20,14 +20,18 @@ for r in valid:
  body=f'''<h1>{name}</h1><p class="note">PR：本ページにはアフィリエイト広告が含まれます。</p><p>{esc(r['description'])}</p><h2>特徴</h2><p>{esc(r['benefits'])}</p><h2>注意点</h2><p>{esc(r['cautions'])}</p><h2>料金</h2><p>{esc(r['price_note'])}</p><p>情報確認日：{esc(r['verified_at'])}</p><p><a href="{esc(r['affiliate_url'])}" rel="sponsored nofollow noopener" target="_blank">サービスの詳細を見る（広告）</a></p><p><a href="{esc(r['official_url'])}" rel="noopener" target="_blank">公式情報を確認</a></p>'''
  (OUT/filename).write_text(page(r['name'],body,r['description']),encoding='utf-8')
  links.append(f'<li><a href="./{filename}">{name}</a> — {esc(r["category"])}</li>')
-index='<h1>サービス比較ノート</h1><p>確認済みのサービス情報を掲載しています。各サービスの利用条件を確認して選びましょう。</p>'
-index+='<p><a href="./cloud-cost-calculator.html">無料：クラウド月額コスト比較ツール</a></p>'
-import json
-statefile=ROOT/'data/agent_state.json'
-if statefile.exists():
- for tool_id in json.loads(statefile.read_text(encoding='utf-8')).get('published',[]):
-  if re.fullmatch(r'[a-z0-9-]+',tool_id): index+=f'<p><a href="./{tool_id}.html">無料ツール：{esc(tool_id)}</a></p>'
-index+= '<ul>'+''.join(links)+'</ul>' if links else '<p>現在、公開中の紹介記事はありません。</p>'
+index='''<h1>無料の計算ツール・サービス比較ノート</h1>
+<p>日常や仕事で使える計算ツールを無料で公開しています。入力した値はブラウザ上で計算します。</p>
+<h2>無料の計算ツール</h2>
+<ul>
+<li><a href="./cloud-cost-calculator.html">クラウド月額コスト比較</a> — 2つのサービスの月額費用・期間合計を比較</li>
+<li><a href="./percentage-calculator.html">割合・増減率計算</a> — 数値の増減率を計算</li>
+<li><a href="./hourly-rate-calculator.html">時給・月収換算</a> — 時給と労働時間から収入を概算</li>
+<li><a href="./break-even-calculator.html">損益分岐点計算</a> — 必要販売数を計算</li>
+</ul>
+<p>計算結果は参考値です。契約・取引・意思決定の前に条件をご確認ください。</p>
+<h2>サービス紹介</h2>'''
+index+= '<ul>'+''.join(links)+'</ul>' if links else '<p>現在、公開中の紹介記事はありません。広告案件は提携・内容確認後に掲載します。</p>'
 (OUT/'index.html').write_text(page('サービス比較ノート',index,'クラウド費用・割合・時給・損益分岐点を無料で計算できるツールとサービス比較情報。'),encoding='utf-8')
 (OUT/'robots.txt').write_text('User-agent: *\nAllow: /\n',encoding='utf-8')
 print(f'Built {len(valid)} offer pages')
