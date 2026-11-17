@@ -51,6 +51,12 @@ def test():
     banner = (ROOT/'data/approved_ads/star-rental-server-banner.html').read_text(encoding='utf-8')
     assert banner in star, 'approved A8 banner code must not be altered'
     assert 'width="300" height="250"' in star
+    # Both approved ad units must occur exactly once; duplicate tracking pixels are not acceptable.
+    assert star.count(approved) == 1, 'text ad must be embedded exactly once'
+    assert star.count(banner) == 1, 'banner ad must be embedded exactly once'
+    assert star.count('https://px.a8.net/svt/ejp?') == 2, 'unexpected A8 click links'
+    assert star.count('/0.gif?a8mat=') == 2, 'unexpected A8 tracking pixels'
+    assert '<h2>広告</h2>' in star, 'advertising section missing'
     assert 'PR：本ページにはアフィリエイト広告が含まれます。' in star
     assert 'PR・広告あり' in (docs/'index.html').read_text(encoding='utf-8')
     assert '現在、公開中の紹介記事はありません' not in (docs/'index.html').read_text(encoding='utf-8')
