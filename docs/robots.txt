@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://597hnnhjg6-gif.github.io/affiliate-auto/sitemap.xml
