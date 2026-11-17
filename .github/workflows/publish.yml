@@ -1,10 +1,11 @@
-name: Build and deploy
+name: Deploy public static site
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '17 1 * * *'
   push:
     branches: [main]
+    paths:
+      - 'docs/**'
+      - '.github/workflows/publish.yml'
 permissions:
   contents: read
   pages: write
@@ -20,10 +21,11 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - run: python scripts/test_site.py
+      - name: Verify generated static site
+        run: |
+          test -s docs/index.html
+          test -s docs/sitemap.xml
+          test -s docs/robots.txt
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
