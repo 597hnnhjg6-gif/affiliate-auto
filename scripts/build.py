@@ -33,7 +33,7 @@ index='''<h1>無料の計算ツール・サービス比較ノート</h1>
 <p>計算結果は参考値です。契約・取引・意思決定の前に条件をご確認ください。</p>
 <h2>サービス紹介</h2>'''
 index+= '<ul>'+''.join(links)+'</ul>' if links else '<p>承認済み広告を含むサービス紹介は、下記の基礎情報からご覧ください。</p>'
-# Editorial-only page: no A8 tracking link or unapproved ad material.
+# Approved ad is embedded from the original user-supplied snippets without mutation.
 star_body='''<h1>スターレンタルサーバーとは？</h1>
 <p class="note">PR：本ページにはアフィリエイト広告が含まれます。</p>
 <p>スターレンタルサーバーは、エックスサーバー株式会社が運営するレンタルサーバーサービスです。WordPressによるブログやホームページの公開に利用できます。</p>
